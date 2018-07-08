@@ -2,9 +2,9 @@
   "name": "loading-screen",
   "version": "1.0.0",
   "description": "A high level abstraction over the little JavaScript required to display the loading progress of a webpage",
-  "browser": "./src/loadingScreen.js",
+  "browser": "./dist/loadingScreen.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp build:all"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,16 @@
   "bugs": {
     "url": "https://github.com/fedeTibaldo/loadingScreen/issues"
   },
-  "homepage": "https://github.com/fedeTibaldo/loadingScreen#readme"
+  "homepage": "https://github.com/fedeTibaldo/loadingScreen#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-minify-mangle-names": "^0.4.3",
+    "babel-preset-es2015-nostrict": "^6.6.2",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-clean-css": "^3.9.4",
+    "gulp-header": "^2.0.5",
+    "gulp-rename": "^1.3.0",
+    "rimraf": "^2.6.2"
+  }
 }
