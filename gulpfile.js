@@ -22,11 +22,7 @@ gulp.task('build:js', function(done) {
 	gulp.src('./src/loadingScreen.js')
 		.pipe(babel({
 			presets: ['es2015-nostrict'],
-			plugins: [
-				//["transform-runtime", { "strict": false }],
-				['babel-plugin-minify-mangle-names'],
-				//['babel-plugin-transform-strict-mode', { 'strict': false }] 
-			],
+			plugins: ['babel-plugin-minify-mangle-names'],
 			minified: true,
 			comments: false
 		}))
