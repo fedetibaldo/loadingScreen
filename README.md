@@ -12,7 +12,16 @@ The solution
 ------------
 This library provides the minimum setup necessary to get up and running with your own loading screen, whether simple or complex. `loadingScreen` won't care about the underlying logic at all. It has only one job: to keep track of the resource download progress and notify your functions.
 
-Example usage (demos coming soon)
+Technical considerations
+------------
+`loadingScreen` uses an alternative approach to the usual "fade out at 100%". In fact, when fully loaded, **it's the content the one that fades in**. This very behavior lets users interact immediately with the interface without waiting for the previous animation to complete. In this way, the application seems faster while no real boosts are applied. [Even Apple has implemented it!](https://twitter.com/vincentriemer/status/1004880123617857536)
+
+This library strives not to hinder the way you styled your website, applying neutral values to the few properties it customizes. Here are the ones that may impact your development:
+- the content container has a final `z-index` of 0;
+- the content container has `position: relative`;
+- the `body` has `margin: 0` (applied by [Normalize.css](https://necolas.github.io/normalize.css/) as well);
+
+Example - Bootstrap Website
 ------------
 ``` html
 <!DOCTYPE html>
@@ -31,7 +40,7 @@ Example usage (demos coming soon)
 	</script>
 	<style>
 		/*! loadingScreen stylesheet ~ (c)2018 Federico Tibaldo ~ MIT license */
-                body{margin:0}#ls-main{position:relative;height:100vh;opacity:0;transition:opacity 1s ease-out;overflow:auto}#ls-main.ls-active{height:auto;min-height:100vh;opacity:1}#ls-background{position:absolute;top:0;left:0;width:100%;height:100vh}
+		body{margin:0}#ls-main{position:relative;height:100vh;opacity:0;transition:opacity 1s ease-out;overflow:auto;z-index:-2}#ls-main.ls-active{height:auto;min-height:100vh;opacity:1;z-index:0}#ls-background{position:absolute;top:0;left:0;width:100%;height:100vh;z-index:-1}
 	</style>
 </head>
 <body>
