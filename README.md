@@ -22,7 +22,86 @@ This library strives not to hinder the way you styled your website, applying neu
 - the `body` has `margin: 0` (applied by [Normalize.css](https://necolas.github.io/normalize.css/) as well);
 
 Example - Bootstrap Website
-------------
+===========================
+This examples shows really well what's necessary for `loadingScreen` to work in term of code. On the other hand, the loading animation is very short and thus not very perceptable since Bootstrap CDNs look quite efficient.
+
+The hooks
+-------------
+In this example, the main stylesheet is `preload`ed and the script is `defer`red. To let `loadingScreen` know when they finish loading, we're gonna call the function `got` in their `onload` passing the expected number of kilobytes as the argument.
+
+``` html
+<link rel="preload" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" as="style"
+	onload="loadingScreen.got(137.63)">
+```
+
+``` html
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"
+	onload="loadingScreen.got(49.54)" defer></script>
+```
+
+The payload size hasn't got to be perfect. You could even use adimensional numbers such as `3` and `1`. The idea behind though is that they should respect a scale which reflects their real volume. Since you may not know the size of your assets a priori, this is often a two-stage process where you first guess their proportion and then switch to real values. Later inspecting the network requests will do the trick.
+
+The HTML
+--------------
+To make everything work, you'll need to wrap your whole website in a `div` with an id of `ls-main`. At the same time, you've got to declare a sibling with id `ls-background`. The overall structure looks like this:
+
+``` html
+<body>
+	<div id="ls-background"></div>
+	<div id="ls-main">
+		<!-- your website -->
+	</div>
+</body>
+```
+
+The functions
+--------------
+Next step is overriding the functions that the core will call to generate the content of the loading screen and update it. Respectively `generateInnerHTML`  and `updateInnerHTML`.
+
+Even if their names suggest the use of the `innerHTML` function provided by the browser, you should always follow best practices.
+
+It's encouraged the use of the `this` object as a container for any properties you may need to pass around. Just don't overwrite the other two core functions (`got` and `init`).
+
+``` javascript
+loadingScreen.generateInnerHTML = function(container) {
+	let parent = document.createElement('div');
+	parent.style = "position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:system-ui,BlinkMacSystemFont,-apple-system,Segoe UI, Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;text-align:center;font-weight:100;color:#fff";
+	// text
+	let paragraph = document.createElement('p');
+	paragraph.style = "font-size:2rem;"
+	paragraph.textContent = "Your page is loading";
+	// percentage
+	let percentage = document.createElement('p');
+	percentage.style = "font-size:3rem;margin-top:1rem;";
+	percentage.textContent = '0%';
+	// append elements
+	parent.appendChild(paragraph);
+	parent.appendChild(percentage);
+	container.appendChild(parent);
+	// store nodes
+	this.percentage = percentage;
+};
+
+```
+
+``` javascript
+loadingScreen.updateInnerHTML = function(progress) {
+	this.percentage.textContent = Math.round(progress) + '%';
+};
+
+```
+
+The initiation
+--------------
+Finally, we initiate `loadingScreen` passing the total number of kilobytes that we expect the asynchronous requests will download. Again, any adimensional number will do the trick, just make sure that it corresponds to the sum of the numbers passed to `got` via your hooks.
+
+``` javascript
+loadingScreen.init(137.63 + 49.54, 'background:#93439b;');
+```
+
+Full code
+--------------
+
 ``` html
 <!DOCTYPE html>
 <html lang="en">
